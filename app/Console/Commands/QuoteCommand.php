@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Console\Commands;
@@ -30,7 +31,6 @@ class QuoteCommand extends Command
      */
     public function handle(QuoteManager $manager)
     {
-
         $count = intval($this->option('count') ?? $this->count);
 
         try {
