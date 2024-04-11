@@ -13,7 +13,7 @@ class QuoteController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        $quotes = QuotesHelper::suffled(Cache::get('quotes'), config('quotes.count'));
+        $quotes = QuotesHelper::shuffled(Cache::get('quotes'), config('quotes.count'));
         return QuoteResource::collection($quotes);
     }
 }

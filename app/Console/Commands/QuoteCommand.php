@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 use App\Services\Quotes\QuoteManager;
 use App\Services\Quotes\Storage\StorageManager;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
 
 class QuoteCommand extends Command
 {
@@ -15,14 +14,14 @@ class QuoteCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:quote';
+    protected $signature = 'app:quote {--count=}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Fetch Quotes and store in Cache';
 
     private int $count = 100;
 
@@ -31,16 +30,17 @@ class QuoteCommand extends Command
      */
     public function handle(QuoteManager $manager)
     {
-        $count = config('quotes.fetch_max') ?? $this->count;
+
+        $count = intval($this->option('count') ?? $this->count);
 
         try {
             $this->info('Warming quote cache...');
 
-            $bar = $this->output->createProgressBar($this->count);
+            $bar = $this->output->createProgressBar($count);
 
             $bar->start();
             $storage = new StorageManager();
-            $storage->fetch($manager, $this->count, $bar);
+            $storage->fetch($manager, $count, $bar);
 
             $bar->finish();
             $this->output->newLine();

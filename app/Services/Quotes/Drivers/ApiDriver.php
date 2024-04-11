@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace App\Services\Quotes\Drivers;
 
 use App\Services\Quotes\Drivers\AbstractApiDriver;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Http;
+
 class ApiDriver extends AbstractApiDriver
 {
     /**

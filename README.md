@@ -1,66 +1,140 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Kayne West quotes
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Description
 
-## About Laravel
+The Rest API service fetches Kayne West quotes from (https://kanye.rest/) and shows 5 random 
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Installation and Setup
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+To install and setup the project please follow the further steps:
 
-## Learning Laravel
+```bash
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+git clone git@github.com:{user}/laravel_kanye.git ./
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+composer install
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+./vendor/bin/sail up -d
+```
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+After the environment is built up migrate the database:
 
-### Premium Partners
+```bash
+./vendor/bin/sail artisan migrate
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Fetch quotes and import into the database:
 
-## Contributing
+all:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+./vendor/bin/sail artisan app:quote
+```
 
-## Code of Conduct
+partial:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+./vendor/bin/sail artisan app:quote --count={integer}
+```
 
-## Security Vulnerabilities
+Add predefined API Token to .env:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+API_TOKEN={token}
+```
 
-## License
+## Read Kayne West 5 random quotes
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Visit your browser and fetch quotes:
+
+```bash
+http://localhost/api/quotes?api_token={token}
+```
+or in cli:
+```bash
+curl http://localhost/api/quotes?api_token=1234567
+```
+
+You will then see 5 random quotes, which will contain new quotes randomly every time you update
+
+For Example:
+```angular2html
+{
+    "data": [
+        {
+            "quote": "I'll say things that are serious and put them in a joke form so people can enjoy them. We laugh to keep from crying."
+        },
+        {
+            "quote": "I'm the best"
+        },
+        {
+            "quote": "I need an army of angels to cover me while I pull this sword out of the stone"
+        },
+        {
+            "quote": "Speak God's truth to power"
+        },
+        {
+            "quote": "So many of us need so much less than we have especially when so many of us are in need"
+        }
+    ]
+}
+```
+
+
+## Testing
+
+Execute the following command:
+
+```bash
+./vendor/bin/sail artisan test
+```
+
+
+## Methodology
+
+### kanye.rest API service
+
+Upon examining the kanye.rest API, it was discovered that it returns a single quotation in JSON format.
+Accessing the API involves a simple GET request to the endpoint https://api.kanye.rest. 
+The response from the API adheres to the following structure:
+
+```json
+{
+    "quote": "I need an army of angels to cover me while I pull this sword out of the stone"
+}
+```
+
+The task at hand is to develop a basic quote API that provides Kanye West quotes.
+This API should randomly retrieve 5 quotes, with the capability to refresh and obtain 5 more random quotes.
+
+Initially, this presents a challenge as the kanye.rest service only furnishes one quote per request.
+
+To address this issue, I propose implementing a command that can be executed during application setup to populate 
+a database with quotes fetched from the kanye.rest API. This approach enables the API to furnish 5 random quotes. 
+Additionally, the command can be scheduled to run at regular intervals, ensuring the database remains updated with new quotes.
+
+The API must also facilitate the refreshment of the 5 randomly retrieved quotes, which is essentially 
+the purpose of the endpoint for fetching quotes and thus will be treated as the refresh function.
+
+To optimize the retrieval process, caching is permitted in this task. Therefore, I intend to utilize caching to store 
+the quotes retrieved from the database, enhancing the speed of quote retrieval.
+
+### Authentication
+
+The task needs securing the API with authentication, without using a pre-existing packages.
+
+To achieve this, the API will be safeguarded using a straightforward API token.
+
+I will incorporate an API_TOKEN entry in the env file, which will be utilized in the authentication configuration file.
+
+A Middleware will be implemented to verify the API token for each request made to the API. 
+This Middleware will authenticate the token against the configuration and permit the request to proceed if the token is valid. 
+Otherwise, a 401 response will be issued, indicating unauthorized access.
+
+### API Client
+
+As per the task requirements, the utilization of Laravel's Manager Pattern is encouraged. 
+Hence, I will employ this pattern while developing the API Client. This approach will facilitate 
+the extensibility of the API Client, enabling seamless integration with other APIs in the future.
